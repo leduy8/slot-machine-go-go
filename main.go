@@ -33,8 +33,37 @@ func getBet(balance uint) uint {
 	return bet
 }
 
+func generateSymbolArray(symbols map[string]uint) []string {
+	var symbolArr []string
+	for symbol, count := range symbols {
+		for i := 0; i < int(count); i++ {
+			symbolArr = append(symbolArr, symbol)
+		}
+	}
+
+	return symbolArr
+}
+
 func main() {
 	balance := uint(200)
+	// Symbol map
+	// symbol: odds
+	symbols := map[string]uint{
+		"A": 4,
+		"B": 7,
+		"C": 12,
+		"D": 20,
+	}
+	symbolArr := generateSymbolArray(symbols)
+	fmt.Println(symbolArr)
+	// Multiplier map
+	// multiplier: x times winning for a line (Ex: Line of A = 20 times of your bet)
+	multiplier := map[string]uint{
+		"A": 20,
+		"B": 10,
+		"C": 5,
+		"D": 2,
+	}
 
 	getName()
 
