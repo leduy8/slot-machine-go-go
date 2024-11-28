@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+)
 
 func getName() string {
 	name := ""
@@ -44,6 +47,47 @@ func generateSymbolArray(symbols map[string]uint) []string {
 	return symbolArr
 }
 
+func getRandomNumber(min int, max int) int {
+	return rand.Intn(max-min) + min + 1
+}
+
+func getSpin(reel []string, rows int, cols int) [][]string {
+	var result [][]string
+
+	for i := 0; i < rows; i++ {
+		result = append(result, []string{})
+	}
+
+	for col := 0; col < cols; col++ {
+		selected := map[int]bool{}
+		for row := 0; row < rows; row++ {
+			for {
+				randomIndex := getRandomNumber(0, len(reel)-1)
+				_, exists := selected[randomIndex]
+				if !exists {
+					selected[randomIndex] = true
+					result[row] = append(result[row], reel[randomIndex])
+					break
+				}
+			}
+		}
+	}
+
+	return result
+}
+
+func printSpin(spin [][]string) {
+	for _, row := range spin {
+		for j, symbol := range row {
+			fmt.Printf(symbol)
+			if j != len(row)-1 {
+				fmt.Printf(" | ")
+			}
+		}
+		fmt.Println()
+	}
+}
+
 func main() {
 	balance := uint(200)
 	// Symbol map
@@ -55,7 +99,6 @@ func main() {
 		"D": 20,
 	}
 	symbolArr := generateSymbolArray(symbols)
-	fmt.Println(symbolArr)
 	// Multiplier map
 	// multiplier: x times winning for a line (Ex: Line of A = 20 times of your bet)
 	multiplier := map[string]uint{
@@ -74,6 +117,9 @@ func main() {
 		}
 
 		balance -= bet
+		spin := getSpin(symbolArr, 3, 3)
+		printSpin(spin)
+		// If win, update balance
 	}
 
 	fmt.Printf("You left with %d\n", balance)
